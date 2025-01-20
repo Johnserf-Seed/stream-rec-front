@@ -3,9 +3,6 @@ import type {Config} from "tailwindcss"
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
   prefix: "",
@@ -19,7 +16,13 @@ const config = {
     },
     extend: {
       screens: {
+        "mobileS": "320px",
+        "mobileM": "375px",
+        "mobileL": "425px",
+        'laptop': '1024px',
         "3xl": "1600px",
+        "4xl": "1920px",
+        "4k": "2560px",
       },
       colors: {
         border: "hsl(var(--border))",

@@ -14,12 +14,13 @@
     "relativeMessage": "from last {date, select, 0 {week} 2 {year} 1 {month} other {day}}"
   },
   "StreamerData": {
-    "liveNow": "is live now",
-    "notLive": "not live",
+    "state": "{state, select, 0 {not live} 1 {live now} 2 {not live} 3 {detecting} 4 {error} 5 {disabled} 6 {not found} other {disabled}}",
     "noStreamsYet": "no streams yet",
     "template": "Template",
     "name": "Name",
-    "url": "Url"
+    "url": "Url",
+    "startTime": "Recording start time",
+    "endTime": "Recording end time"
   },
   "Sidebar": {
     "dashboard": "Dashboard",
@@ -28,6 +29,7 @@
     "uploads": "Uploads",
     "settings": "Settings",
     "users": "Users",
+    "serverInfo": "Server info",
     "logout": "Logout"
   },
   "StreamersPage": {
@@ -49,7 +51,7 @@
     "asTemplate": "As template",
     "asTemplateDescription": "Whether to use this streamer as a template for other streamers.",
     "nameDescription": "The name of the streamer.",
-    "urlDescription": "Streamer`s streaming url, with following format: <code>'{`https://www.huya.com/{name}`}'</code> - Huya <code>'{`https://live.douyin.com/{id}`}'</code> - Douyin <code>'{`https://www.douyu.com/{id}`}'</code> - Douyu <code>'{`https://www.twitch.tv/{name}`}'</code> - Twitch <code>'{`https://www.pandalive.co.kr/live/play/{id}`}'</code> - PandaTV",
+    "urlDescription": "Streamer`s streaming url",
     "enabledRecording": "Enabled recording",
     "enabledRecordingDescription": "Whether to enable recording for this streamer.",
     "streamerOnlyOptions": "Streamer only options",
@@ -80,7 +82,7 @@
     "operation": "Rclone operation",
     "operationDescription": "Rclone operation, such as copy, move, sync, etc.",
     "remote": "Rclone remote",
-    "remoteDescription": "Rclone remote name, placeholders are supported. eg: gdrive:records/'{streamer}/{%MM}/{%dd}' <important>It is recommended to keep conf file in the same folder as records and add a --config argument.</important>",
+    "remoteDescription": "Rclone remote name, placeholders are supported. eg: gdrive:records/'{streamer}/{%m}/{%d}' <important>It is recommended to keep conf file in the same folder as records and add a --config argument.</important>",
     "args": "Arguments",
     "argsDescription": "Rclone arguments, each argument and value should be separated. For example: for --config /path/to/rclone.conf, you should add a new argument with --config then add another argument with /path/to/rclone.conf"
   },
@@ -97,6 +99,12 @@
     "title": "Move",
     "destination": "Destination",
     "destinationDescription": "Destination folder to move.",
+    "destinationDefault": "Enter a destination folder"
+  },
+  "CopyAction": {
+    "title": "Copy",
+    "destination": "Destination",
+    "destinationDescription": "Destination folder to copy.",
     "destinationDefault": "Enter a destination folder"
   },
   "RemoveAction": {
@@ -127,6 +135,9 @@
     "part": "Part download delay",
     "partDescription": "The delay between each part download retry.",
     "cookieTitle": "Cookies",
+    "cookieDescription": "Please copy and paste, invalid cookies will be discarded automatically.",
+    "downloadCheckIntervalTitle": "Download check interval",
+    "downloadCheckIntervalDescription": "The interval (in seconds) used to check if a streamer is live or not. Global interval is used if not set.",
     "fetchDelayTitle": "Platform fetch delay",
     "fetchDelayDescription": "The delay between each platform fetch request."
   },
@@ -144,7 +155,7 @@
     "forceOrigin": "Force origin",
     "forceOriginDescription": "Enable this option to force original quality and not the compressed one.",
     "mobileApi": "Use mobile API",
-    "mobileApiDescription": "Enable this option to use mobile API for fetching the stream. Mobile API is faster.</important>"
+    "mobileApiDescription": "Enable this option to use mobile API for fetching the stream. Mobile API is faster."
   },
   "DouyinQualities": {
     "origin": {
@@ -238,7 +249,15 @@
     "cookies": "Cookies",
     "cookieDescription": "Please copy and paste, invalid cookies will be discarded automatically. <important>Optional</important>",
     "skipAds": "Skip ads",
-    "skipAdsDescription": "Use streamlink's --twitch-disable-ads arg <important>Please use Streamlink as download engine, and this option only supports Source quality</important>"
+    "skipAdsDescription": "Use streamlink's --twitch-disable-ads arg <important>This option only supports Source quality</important>",
+    "ttvProxyPlaylist": "ttvlol proxy server address",
+    "ttvProxyPlaylistDescription": "ttvlol proxy server address for proxying m3u8 files, separated by ','",
+    "ttvProxyPlaylistPlaceholder": "Enter ttvlol proxy server address",
+    "ttvProxyPlaylistExclude": "ttvlol channel exclude list",
+    "ttvProxyPlaylistExcludeDescription": "ttvlol channel exclude list for channels that do not need proxying, separated by ','",
+    "ttvProxyPlaylistExcludePlaceholder": "Enter ttvlol channel exclude list",
+    "ttvProxyPlaylistFallback": "Fallback to Twitch API",
+    "ttvProxyPlaylistFallbackDescription": "Whether to fallback to Twitch API when ttvlol proxy request fails"
   },
   "TwitchQualities": {
     "origin": {
@@ -306,6 +325,13 @@
       "name": "160p"
     }
   },
+  "Weibo": {
+    "platform": "Weibo",
+    "sourceFormat": "Source format",
+    "sourceFormatDescription": "Select the source format of the live stream. Default is set to flv.",
+    "sourceFormatPlaceholder": "Please select a source format",
+    "cookieDescription": "Please copy and paste, invalid cookies will be discarded automatically. Optional."
+  },
   "BaseDownloadConfigs": {
     "danmu": "Danmu",
     "danmuDescription": "Whether to download bullet comments. Default is set to follow the global settings.",
@@ -313,6 +339,7 @@
     "cookiesDescription": "Cookies to be used for the download. Default is set to follow the global settings.",
     "outputFolder": "Output folder",
     "outputFolderDescription": "This is the folder where the downloaded files will be saved. Default is set to follow the global settings. You can use placeholders like: <code>'{title}' The title of the streaming.</code><code>'{streamer}' The streamer name of the streaming.</code><code>%Y The year of the streaming.</code><code>%m The month of the streaming.</code><code>%d The day of the streaming.</code><code>%H The hour of the streaming.</code><code>%m The minute of the streaming.</code><code>%s The second of the streaming.</code>",
+    "outputFolderPlaceholderDescription": "'{title}' The title of the streaming.\n'{streamer}' The streamer name of the streaming.\n%Y The year of the streaming.\n%m The month of the streaming.\n%d The day of the streaming.\n%H The hour of the streaming.\n%M The minute of the streaming.\n%S The second of the streaming.",
     "outputFilename": "Output file format",
     "outputFilenameDescription": "This is the file name of the downloaded file. Same placeholders as output folder are available. <important>Please do not include file extension, it will be automatically added based on the below selected format.</important>",
     "outputFormat": "Output video extension",
@@ -339,13 +366,14 @@
   },
   "GlobalSettings": {
     "engine": "Download engine",
-    "engineDescription": "The engine used for the download. Defaults to FFmpeg. <important>FFmpeg is recommended for most users. Use streamlink only when downloading HLS sources.</important>",
+    "engineDescription": "The engine used for the download. Defaults to FFmpeg. <important>FFmpeg is recommended for most users. Please read the documentation to select the appropriate engine.</important>",
     "danmu": "Danmu",
     "danmuDescription": "Whether to download bullet comments. Default is set to false.",
     "deleteFiles": "Global delete files flag",
     "deleteFilesDescription": "Enable files deletion after download, if disabled, files will be kept in the download folder. <important>It only works when onPartedDownload or onStreamEnded callbacks are not set.</important>",
     "outputFolder": "Output folder",
-    "outputFolderDescription": "This is the folder where the downloaded files will be saved. You can use placeholders like: <code>'{title}' The title of the streaming.</code><code>'{streamer}' The streamer name of the streaming.</code><code>%Y The year of the streaming.</code><code>%m The month of the streaming.</code><code>%d The day of the streaming.</code><code>%H The hour of the streaming.</code><code>%M The minute of the streaming.</code><code>%S The second of the streaming.</code>",
+    "outputFolderDescription": "This is the folder where the downloaded files will be saved. You can use placeholders like: ",
+    "outputFolderPlaceholderDescription": "'{title}' The title of the streaming.\n'{streamer}' The streamer name of the streaming.\n%Y The year of the streaming.\n%m The month of the streaming.\n%d The day of the streaming.\n%H The hour of the streaming.\n%M The minute of the streaming.\n%S The second of the streaming.",
     "outputFilename": "Output file format",
     "outputFilenameDescription": "This is the file name of the downloaded file. Same placeholders as output folder are available. <important>Please do not include file extension, it will be automatically added based on the below selected format.</important>",
     "outputFormat": "Output video extension",
@@ -372,9 +400,15 @@
     "useBuiltInSegmenter": "Use FFmpeg built-in segmenter",
     "useBuiltInSegmenterDescription": "Whether to use FFmpeg built-in segmenter for parting downloads. Default is set to false. <important>Enabling this feature will reduce platform API calls.</important>",
     "useBuiltInSegmenterNote": "Notes:",
-    "useBuiltInSegmenterNoteDescription": "* Only works with time-based parting\n* Streamer's title won't be updated during download\n* Dashboard streamers real time bitrate updating will be disabled\n* Using FLV format will cause color issues in the output video\n* Please use time placeholders in the filename",
+    "useBuiltInSegmenterNoteDescription": "* Only works with time-based parting\n* Streamer's title won't be updated during download\n* Dashboard streamers real time bitrate updating will be disabled\n* Please use time placeholders in the filename",
     "exitOnDownloadError": "Exit on download error",
-    "exitOnDownloadErrorDescription": "If a input stream returns an error, ffmpeg will exit immediately. Default is set to false."
+    "exitOnDownloadErrorDescription": "Once enabled, FFmpeg will throw an error when encountering a resolution change.<important>Enabling this will double the usage of network, CPU, and RAM resources.</important>",
+    "enableFixFlvTitle": "Enable fix",
+    "enableFixFlvDescription": "Enable FLV AVC fix. Some streams may change video data parameters during the stream. This option will split the flv file when the video data parameters change. Default is set to false. <important>CPU and RAM usage will be increased</important>",
+    "enableFlvDuplicateTagFilteringTitle": "Enable duplicate tag filtering",
+    "enableFlvDuplicateTagFilteringDescription": "Enable FLV duplicate tag filtering. Some streams may have duplicate tags in the flv file. This option will remove duplicate tags. Default is set to false.",
+    "combineHlsFiles": "Combine HLS files",
+    "combineHlsFilesDescription": "Combine HLS files into one file. Default is set to false."
   },
   "TableToolbar": {
     "searchPlaceholder": "Filter by {search}...",
@@ -385,8 +419,9 @@
     "desc": "Desc",
     "hide": "Hide",
     "viewOptions": "View",
-    "toggleColumns": "Toogle",
-    "noResults": "No results found"
+    "toggleColumns": "Toggle",
+    "noResults": "No results found",
+    "selectedItems": "{selectedCount, plural, =0 {no items selected} =1 {one selected} other {# selected}}"
   },
   "Pagination": {
     "selectedMessage": "{selectedCount, plural, =0 {no rows selected} =1 {one row selected} other {# rows selected}} {totalCount, plural, =0 {} other {of # rows}}",
@@ -400,10 +435,13 @@
   "Actions": {
     "actions": "Actions",
     "openMenu": "Open menu",
+    "cancel": "Cancel",
     "delete": "Delete",
     "deleting": "Deleting...",
     "deleted": "Deleted successfully",
     "deleteError": "Delete error",
+    "deleteConfirmation": "Are you sure?",
+    "deleteConfirmationDescription": "This action cannot be undone. This will permanently delete {count, plural, =0 {no items} =1 {one item} other {# items}}.",
     "retry": "Retry",
     "retrying": "Retrying...",
     "retried": "Retried successfully",
@@ -411,9 +449,9 @@
   },
   "UploadsPage": {
     "title": "Upload list",
-    "viewUploadDetails": "查看上传详情",
-    "viewStreamDetails": "查看直播详情",
-    "viewStreamerDetails": "查看主播详情"
+    "viewUploadDetails": "View upload details",
+    "viewStreamDetails": "View stream details",
+    "viewStreamerDetails": "View streamer details"
   },
   "UploadDetails": {
     "title": "Upload details"
@@ -537,8 +575,39 @@
     "loginSuccess": "Login success",
     "logout": "Logout"
   },
+  "ResetPasswordPage": {
+    "title": "Reset password",
+    "currentPassword": "Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Confirm your new password",
+    "resetPassword": "Reset password",
+    "resetPasswordSuccess": "Password reset success",
+    "resetPasswordError": "Password reset error",
+    "passwordNotMatch": "Passwords do not match",
+    "confirm": "Confirm"
+  },
   "OpenVideoContextMenu": {
     "download": "Download",
-    "openWithPotPlayer": "Open with PotPlayer"
+    "openWith": "Open with {player}"
+  },
+  "ServerInfoPage": {
+    "title": "Server information",
+    "currentVersionNotSupported": "Current application version is not supported by this WebUI version. Please update application to the latest version.",
+    "operatingSystem": "Operating System",
+    "osName": "OS Name",
+    "osVersion": "OS Version",
+    "osArch": "OS Architecture",
+    "javaEnvironment": "Java Environment",
+    "javaVersion": "Java Version",
+    "javaVendor": "Java Vendor",
+    "applicationVersion": "Application Version",
+    "versionName": "Version Name",
+    "versionCode": "Version Code",
+    "docker": "Docker",
+    "gitInformation": "Git Information",
+    "commitHash": "Commit Hash"
   }
 }
